@@ -1,0 +1,61 @@
+version : "3.8"
+
+services:
+  agendador-tarefas :
+    build : ..\..\agendador-tarefas\agendador-tarefas
+    container_name: agendador-tarefas
+    ports:
+      - "1955:1955"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/db_agendador
+    depends_on:
+      - mongo
+  bff-agendador-tarefas :
+    build: .
+    container_name: bff-agendador-tarefas
+    ports:
+      - "1750:1750"
+    environment:
+      - USUARIO_URL=usuarios:1974/usuarios
+      - AGENDADOR_TAREFAS_URL=agendador-tarefas:1955/tarefas
+      - NOTIFiCACAO_URL=notificacao:1920/email
+  usuarios :
+    build: ..\..\usuarios\usuarios
+    container_name: usuarios
+    ports:
+      - "1974:1974"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db_usuario
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234567
+    depends_on:
+      - postgres
+  notificacao :
+    build: ..\..\notificacao\notificacao
+    container_name: notificacao
+    ports:
+      - "1920:1920"
+  postgres :
+    image: postgres:latest
+    container_name: postgre
+    restart: no
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234567
+      POSTGRES_DB: db_usuario
+    ports:
+      - "5433:5432"
+  mongo :
+    image: mongo:latest
+    container_name: mongo
+    restart: no
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: db_agendador
+
+networks:
+  default:
+    driver: bridge
+
+
