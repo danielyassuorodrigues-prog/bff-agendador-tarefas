@@ -9,6 +9,7 @@ import com.danieljava.bffagendadortarefas.business.dto.in.UsuarioDTORequest;
 import com.danieljava.bffagendadortarefas.business.dto.out.EnderecoDTOResponse;
 import com.danieljava.bffagendadortarefas.business.dto.out.TelefoneDTOResponse;
 import com.danieljava.bffagendadortarefas.business.dto.out.UsuarioDTOResponse;
+import com.danieljava.bffagendadortarefas.business.dto.out.ViaCepDTOResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -115,6 +116,17 @@ public class UsuarioController {
     public ResponseEntity<TelefoneDTOResponse> cadastraTelefone(@RequestBody TelefoneDTORequest dto, @RequestHeader(name = "Authorization", required = false) String token ){
         return ResponseEntity.ok(usuarioService.cadastraTelefone(token, dto));
     }
+
+
+    @GetMapping("/endereco/{cep}")
+    @Operation(summary = "Busca Endereço pelo CEP", description = "Faz a busca de um endereço através do CEP")
+    @ApiResponse(responseCode = "200", description = "Endereço encontrado com sucesso")
+    @ApiResponse(responseCode = "400", description = "CEP inválido")
+    @ApiResponse(responseCode = "500", description = "Erro no servidor")
+    public ResponseEntity<ViaCepDTOResponse> buscaEnderecoCep(@PathVariable("cep") String cep){
+        return ResponseEntity.ok(usuarioService.buscarEnderecoPorCep(cep));
+    }
+
 
 
 
